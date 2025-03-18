@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>遊戲畫面</title>
+    
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <link rel="stylesheet" href="/stylesheets/index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+        if (!window.bgMusic) {
+            window.bgMusic = new Audio("/sounds/background-music.mp3");
+            window.bgMusic.loop = true;
+            window.bgMusic.volume = 0.5;
+
+            const savedTime = localStorage.getItem("audio-time");
+            if (savedTime) {
+                window.bgMusic.currentTime = parseFloat(savedTime);
+            }
+
+            window.bgMusic.addEventListener("timeupdate", () => {
+                if (Math.floor(window.bgMusic.currentTime) % 5 === 0) {
+                    localStorage.setItem("audio-time", window.bgMusic.currentTime);
+                }
+            });
+        }
+        if (window.bgMusic.paused) {
+            document.addEventListener("click", () => {
+                playMusic();
+            }, { once: true });
+        }
+    });
+
+    function playMusic() {
+        if (window.bgMusic.paused) {
+            window.bgMusic.play()
+                .then(() => {
+                    console.log("音樂播放中...");
+                    sessionStorage.setItem("musicPlaying", "true");
+                })
+                .catch(error => console.log("播放失敗:", error));
+        }
+    }
+    </script>
+</head>
+<body>
+    <div id="headline">
+        <h1><span class="pay">Pay</span> or <span class="steal">Steal</span>!</h1>
+    </div>
+
+    <div id="user-panel" class="hidden">
+        <span id="user-name"></span>
+        <span id="user-info"></span>
+        <img id="user-character-img" src="" alt="角色圖片" class="character-img hidden">
+        <div id="action-buttons">
+            <button id="pay-debt-btn">還債</button>
+            <button id="steal-money-btn">偷錢</button>
+        </div>
+    </div>
+
+    <div id="auth">
+        <button id="createAccount">註冊帳號</button>
+        <button id="login">登入帳號</button>
+    </div>
+
+    <div id="registerForm" class="auth-form hidden">
+        <h2>註冊</h2>
+        <input type="text" id="register-username" placeholder="帳號">
+        <input type="password" id="register-password" placeholder="密碼">
+        
+        <label for="character">選擇角色：</label>
+        <select id="character" onchange="updateCharacterImage()">
+            <option value="character1" selected>+0</option>
+            <option value="character2">+0老母</option>
+        </select>
+
+        <div id="character-container">
+            <img id="character-img" src="/images/character1.png" alt="角色圖片">
+        </div>
+
+        <button id="register-btn">註冊</button>
+        <button class="cancel">取消</button>
+    </div>
+
+    <div id="loginForm" class="auth-form hidden">
+        <h2>登入</h2>
+        <input type="text" id="login-username" placeholder="帳號">
+        <input type="password" id="login-password" placeholder="密碼">
+        <button id="login-btn">登入</button>
+        <button class="cancel">取消</button>
+    </div>
+
+    <div id="logoutForm" class="hidden">
+        <button id="logout">登出</button>
+    </div>
+    <div id="leaderboard-button-container">
+        <button id="leaderboard-btn">排行榜</button>
+    </div>
+    <div id="steal-options" class="hidden">
+        <h3>選擇你的犯罪計畫：</h3>
+        
+        <div class="steal-option-container">
+            <p id="low-risk-text" class="steal-text"></p>
+            <button class="steal-option" id="low-risk-btn"></button>
+        </div>
+    
+        <div class="steal-option-container">
+            <p id="medium-risk-text" class="steal-text"></p>
+            <button class="steal-option" id="medium-risk-btn"></button>
+        </div>
+    
+        <div class="steal-option-container">
+            <p id="high-risk-text" class="steal-text"></p>
+            <button class="steal-option" id="high-risk-btn"></button>
+        </div>
+    </div>
+    <div id="paydebt-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>還款</h2>
+            <label for="debt-amount">輸入還款金額：</label>
+            <input type="number" id="debt-amount" min="1" step="100" placeholder="輸入金額">
+            <div class="modal-buttons">
+                <button id="confirm-pay-debt">確認還款</button>
+                <button id="cancel-pay-debt">取消</button>
+            </div>
+        </div>
+    </div>
+    <div id="steal-result-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2 id="steal-result-title"></h2>
+            <p id="steal-result-message"></p>
+        </div>
+    </div>
+    <script src="/javascripts/index.js"></script>
+</body>
+</html>

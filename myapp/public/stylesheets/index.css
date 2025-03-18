@@ -1,0 +1,424 @@
+
+body {
+    margin: 0;
+    padding: 0;
+    background: url('/images/background_desktop.png') no-repeat center center fixed;
+    background-size: cover;
+    font-family: Arial, sans-serif;
+    color: rgb(0, 0, 0);
+    text-align: center;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
+
+#headline {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    text-align: center;
+}
+.pay {
+    color: red;
+    text-shadow: -2px -2px 0 black,  
+                 2px -2px 0 black,  
+                 -2px 2px 0 black,  
+                 2px 2px 0 black;
+}
+
+.steal {
+    color: blue;
+    text-shadow: -2px -2px 0 black,  
+                 2px -2px 0 black,  
+                 -2px 2px 0 black,  
+                 2px 2px 0 black;
+}
+#user-info, #user-name {
+    display: block; 
+    margin-top: 10px; 
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+}
+
+#auth {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+button {
+    width: 200px;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+h1 {
+    font-size: 50px;
+    margin: 0;
+}
+.hidden {
+    display: none;
+}
+
+.auth-form {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    width: 250px;
+    margin: 20px auto;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.auth-form input {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.auth-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.auth-form button.cancel {
+    background-color: #ccc;
+}
+
+.auth-form button:hover {
+    background-color: #0056b3;
+}
+
+#auth button {
+    padding: 10px 20px;
+    margin: 10px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #28a745;
+    color: white;
+}
+
+#auth button:hover {
+    background-color: #218838;
+}
+#character-container {
+    display: flex;  
+    justify-content: center;
+    margin-top: 10px;
+}
+
+#character-img {
+    width: 100px;
+    height: auto;
+    object-fit: contain;
+}
+#user-panel {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+    position: absolute;
+    top: 150px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+}
+#user-character-img {
+    width: 120px;
+    height: auto;
+    object-fit: contain;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+#action-buttons {
+    display: flex;
+    justify-content: space-between;
+    width: 300px;
+    margin-top: 15px;
+}
+
+#pay-debt-btn, #steal-money-btn {
+    width: 120px;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#pay-debt-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+#pay-debt-btn:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+    box-shadow: 0px 0px 10px rgba(40, 167, 69, 0.8);
+}
+
+#steal-money-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+#steal-money-btn:hover {
+    background-color: #c82333;
+    transform: scale(1.05);
+    box-shadow: 0px 0px 10px rgba(220, 53, 69, 0.8);
+}
+
+#logoutForm {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    padding: 0;   
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    width: fit-content;
+}
+#logout {
+    width: 160px;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #dc3545;
+    color: white;
+    transition: transform 0.2s, box-shadow 0.2s;
+    
+    text-align: center;
+    margin: 0 auto;
+}
+
+
+#logout:hover {
+    background-color: #c82333;
+    transform: scale(1.05);
+    box-shadow: 0px 0px 10px rgba(220, 53, 69, 0.8);
+}
+#leaderboard-button-container {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+}
+
+#leaderboard-btn {
+    width: 150px;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #ffc107;
+    color: black;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#leaderboard-btn:hover {
+    background-color: #e0a800;
+    transform: scale(1.05);
+    box-shadow: 0px 0px 10px rgba(255, 193, 7, 0.8);
+}
+#steal-options {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.8);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    z-index: 1000;
+}
+
+#steal-options h3 {
+    color: white;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+.steal-option-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.steal-text {
+    font-size: 18px;
+    color: white;
+    margin-bottom: 10px;
+    width: 80%;
+    max-width: 500px;
+}
+.steal-option {
+    width: 300px;
+    padding: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    margin: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+
+#low-risk-btn {
+    background-color: #28a745;
+    color: white;
+}
+#low-risk-btn:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+    box-shadow: 0px 0px 10px rgba(40, 167, 69, 0.8);
+}
+
+
+#medium-risk-btn {
+    background-color: #ffc107;
+    color: black;
+}
+#medium-risk-btn:hover {
+    background-color: #e0a800;
+    transform: scale(1.05);
+    box-shadow: 0px 0px 10px rgba(255, 193, 7, 0.8);
+}
+
+
+#high-risk-btn {
+    background-color: #dc3545;
+    color: white;
+}
+#high-risk-btn:hover {
+    background-color: #c82333;
+    transform: scale(1.05);
+    box-shadow: 0px 0px 10px rgba(220, 53, 69, 0.8);
+}
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    color: white;
+    display: none;
+}
+
+.modal.show {
+    display: block;
+}
+
+.modal-content {
+    background: #222;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.modal-buttons button {
+    padding: 10px 15px;
+    background: #444;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-buttons button:hover {
+    background: #666;
+}
+
+
+
+@media screen and (max-width: 768px) {
+    body {
+        background: url('/images/background_mobile.png') no-repeat center center fixed;
+        background-size: cover;
+    }
+
+    h1 {
+        font-size: 40px;
+    }
+
+    #headline {
+        top: 5px;
+    }
+    #game-container {
+        width: 90%;
+        padding: 20px;
+    }
+
+    button {
+        width: 100%;
+    }
+    #logoutForm {
+        right: 10px;
+        bottom: 10px;
+    }
+    #logout {
+        width: 130px;
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    #leaderboard-button-container {
+        left: 10px;
+        bottom: 10px;
+    }
+
+    #leaderboard-btn {
+        width: 120px;
+        font-size: 14px;
+        padding: 8px;
+    }
+}
