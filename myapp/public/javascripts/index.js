@@ -1,11 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => { 
     gsap.to("#headline h1", {
-        scale: 1.2,  
-        duration: 1.5, 
+        scale: 1.2,
+        duration: 1.5,
         ease: "power1.inOut",
-        yoyo: true, 
-        repeat: -1 
+        yoyo: true,
+        repeat: -1,
+        transformOrigin: "center center"
     });
+    
     const registerBtn = document.getElementById("createAccount");
     const loginBtn = document.getElementById("login");
     const authDiv = document.getElementById("auth");
@@ -139,19 +141,21 @@ async function checkLogin() {
             document.getElementById("user-panel").style.display = "flex";
             const userName = document.getElementById('user-name');
             userName.innerText = `${data.username}`;
-            userName.classList.remove("hidden"); 
-            const userInfo = document.getElementById('user-info');
-            userInfo.innerText = `存款: ${data.bankBalance} 債務: ${data.debt} 聲譽: ${data.reputation} 警示度: ${data.policeAttention}`;
-            userInfo.classList.remove("hidden");
+            document.getElementById("user-balance").innerText = `💰 存款: ${data.bankBalance}`;
+            document.getElementById("user-debt").innerText = `💳 債務: ${data.debt}`;
+            document.getElementById("user-reputation").innerText = `🌟 聲譽: ${data.reputation}`;
+            document.getElementById("user-police").innerText = `🚔 警示度: ${data.policeAttention}`;
             const characterImg = document.getElementById("user-character-img");
             characterImg.src = data.characterImage;
             characterImg.classList.remove("hidden");
             document.getElementById("logoutForm").style.display = "flex";
             document.getElementById("logout").classList.remove("hidden");
+            document.getElementById("intro-button-container").style.display = "none";
         }
     } catch (err) {
         console.log("登入已過期，請重新登入");
         localStorage.removeItem("token");
+        document.getElementById("intro-button-container").style.display = "flex";
     }
 }
 
@@ -170,15 +174,25 @@ async function logout() {
 
     document.getElementById("registerForm").classList.add("hidden");
     document.getElementById("loginForm").classList.add("hidden");
+    document.getElementById("intro-button-container").style.display = "flex";
 
     location.reload();
 }
 async function fetchStealOptions() {
     try {
-        const res = await fetch("/steal/random-options", {
+        const res = await fetch("/profile", {
             headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
         });
-        const data = await res.json();
+        const userData = await res.json();
+
+        if (userData.reputation < 0) {
+            alert("沒人相信你...偷不了一點!");
+            return;
+        }
+        const options = await fetch("/steal/random-options", {
+            headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
+        });
+        const data = await options.json();
 
         document.getElementById("low-risk-text").innerText = data.low.scenario;
         document.getElementById("medium-risk-text").innerText = data.medium.scenario;
@@ -197,7 +211,7 @@ async function fetchStealOptions() {
         console.error("取得偷錢選項失敗", err);
     }
 }
-function showStealResult(title, message) {
+function showStealResult(title, message, gameOver) {
     const modal = document.getElementById("steal-result-modal");
     const modalTitle = document.getElementById("steal-result-title");
     const modalMessage = document.getElementById("steal-result-message");
@@ -206,9 +220,16 @@ function showStealResult(title, message) {
     modalMessage.innerText = message;
     modal.classList.add("show");
 
-    setTimeout(() => {
-        modal.classList.remove("show");
-    }, 3000);
+    if(gameOver) {
+        setTimeout(() => {
+            logout();
+        }, 4000);
+    }
+    else {
+        setTimeout(() => {
+            modal.classList.remove("show");
+        }, 4000);
+    }
 }
 async function executeSteal(riskLevel, scenarioData) {
     try {
@@ -222,14 +243,18 @@ async function executeSteal(riskLevel, scenarioData) {
         });
 
         const data = await res.json();
+        if(data.gameOver) {
+            showStealResult("🚔 你被警方逮捕了！", data.message , true);
+            document.getElementById("steal-options").style.display = "none";
+            return;
+        }
         if (data.error) {
             alert(`錯誤: ${data.error}`);
             return;
         }
-        const resultMessage = `${data.message}\n金額變化：${data.amount}\n聲譽變化：${data.reputationChange}\n警察示度變化：${data.policeChange}`;
-        showStealResult("行動結果", resultMessage);
+        const resultMessage = `${data.message}\n💰 金額變化：${data.amount}\n🌟 聲譽變化：${data.reputationChange}\n🚔 警示度變化：${data.policeChange}`;
+        showStealResult("行動結果", resultMessage, false);
         document.getElementById("steal-options").style.display = "none";
-
         checkLogin();
     } catch (err) {
         console.error("執行偷錢失敗", err);
@@ -268,11 +293,29 @@ async function confirmPayDebtHandler() {
         if (data.error) {
             alert(data.error);
         } else {
+            showDebtMessageOverlay(data.payDebtMessage);
             closePayDebtModal();
-            checkLogin();
+            setTimeout(() => checkLogin(), 500);
         }
     } catch (err) {
         console.error("還款失敗:", err);
         alert("還款時發生錯誤，請稍後再試！");
     }
+}
+
+function showDebtMessageOverlay(message) {
+    const overlay = document.createElement("div");
+    overlay.classList.add("overlay");
+    
+    const messageBox = document.createElement("div");
+    messageBox.classList.add("message-box");
+    messageBox.innerHTML = `<h2>${message}</h2><button onclick="closeOverlay()">確定</button>`;
+    
+    overlay.appendChild(messageBox);
+    document.body.appendChild(overlay);
+}
+
+function closeOverlay() {
+    const overlay = document.querySelector(".overlay");
+    if (overlay) overlay.remove();
 }

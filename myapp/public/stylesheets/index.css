@@ -1,3 +1,14 @@
+* {
+    box-sizing: border-box;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
 
 body {
     margin: 0;
@@ -36,15 +47,45 @@ body {
                  -2px 2px 0 black,  
                  2px 2px 0 black;
 }
-#user-info, #user-name {
-    display: block; 
-    margin-top: 10px; 
-    font-size: 20px;
+#user-name {
+    font-size: 22px;
+    font-weight: 600;
+    color: #333; 
+    letter-spacing: 1px;
+    font-family: 'Arial', sans-serif;
+    background: rgba(255, 255, 255, 0.6);
+    padding: 5px 15px;
+    border-radius: 8px;
+}
+#user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
     font-weight: bold;
     color: white;
     text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+    padding: 10px 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
 }
 
+.user-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 350px;
+}
+
+.user-row span {
+    flex: 1;
+    text-align: center;
+    padding: 8px 10px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 3px;
+}
 #auth {
     position: absolute;
     top: 50%;
@@ -86,8 +127,8 @@ h1 {
     border-radius: 10px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     text-align: center;
-}
 
+}
 .auth-form input {
     width: 90%;
     padding: 10px;
@@ -129,6 +170,26 @@ h1 {
 #auth button:hover {
     background-color: #218838;
 }
+.character-selection {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.character-selection label {
+    width: 50%;
+    text-align: left;
+    font-weight: bold;
+}
+
+.character-selection select {
+    width: 50%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
 #character-container {
     display: flex;  
     justify-content: center;
@@ -144,9 +205,9 @@ h1 {
     display: none;
     flex-direction: column;
     align-items: center;
-    margin-top: 50px;
+    margin-top: 10px;
     position: absolute;
-    top: 150px;
+    top: 100px;
     left: 50%;
     transform: translateX(-50%);
     width: 100%;
@@ -379,7 +440,55 @@ h1 {
 }
 
 
+#intro-button-container {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
 
+.intro-button {
+    font-size: 1.2rem;
+    padding: 10px 25px;
+    border: none;
+    border-radius: 10px;
+    background-color: #3498db;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.intro-button:hover {
+    background-color: #2980b9;
+}
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.message-box {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.message-box h2 {
+    margin-bottom: 10px;
+}
+
+.message-box button {
+    padding: 5px 15px;
+    cursor: pointer;
+}
 @media screen and (max-width: 768px) {
     body {
         background: url('/images/background_mobile.png') no-repeat center center fixed;
@@ -421,4 +530,9 @@ h1 {
         font-size: 14px;
         padding: 8px;
     }
+    #intro-button-container {
+        bottom: 10px;
+
+    }
+
 }

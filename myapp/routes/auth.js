@@ -106,5 +106,7 @@ router.post("/logout", (req, res) => {
     res.json({ message: "登出成功" });
 });
 
-
+router.get("/intro", (req, res)=> {
+    res.render("intro");
+});
 module.exports = router;

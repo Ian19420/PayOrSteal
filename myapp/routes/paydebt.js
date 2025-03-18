@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const authMiddleware = require("../middleware/auth");
 const model = require("../model");
+const { getPayDebtMessage } = require("../services/paydebtMessage");
 
 router.post("/", authMiddleware, async (req, res) => {
     try {
@@ -26,11 +27,13 @@ router.post("/", authMiddleware, async (req, res) => {
         if (user.debt < 0) user.debt = 0;
 
         await user.save();
+        const payDebtMessage = getPayDebtMessage(amount);
 
         res.json({
             message: `成功還款 ${amount} 元！`,
             bankBalance: user.bankBalance,
-            debt: user.debt
+            debt: user.debt,
+            payDebtMessage
         });
     } catch (err) {
         console.error("還款時發生錯誤:", err);

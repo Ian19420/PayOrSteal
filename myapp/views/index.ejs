@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>遊戲畫面</title>
     
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -55,8 +55,17 @@
 
     <div id="user-panel" class="hidden">
         <span id="user-name"></span>
-        <span id="user-info"></span>
-        <img id="user-character-img" src="" alt="角色圖片" class="character-img hidden">
+        <div id="user-info">
+            <div class="user-row">
+                <span id="user-balance"></span>
+                <span id="user-debt"></span>
+            </div>
+            <div class="user-row">
+                <span id="user-reputation"></span>
+                <span id="user-police"></span>
+            </div>
+            <img id="user-character-img" src="" alt="角色圖片" class="character-img hidden">
+        </div>
         <div id="action-buttons">
             <button id="pay-debt-btn">還債</button>
             <button id="steal-money-btn">偷錢</button>
@@ -73,11 +82,13 @@
         <input type="text" id="register-username" placeholder="帳號">
         <input type="password" id="register-password" placeholder="密碼">
         
-        <label for="character">選擇角色：</label>
-        <select id="character" onchange="updateCharacterImage()">
-            <option value="character1" selected>+0</option>
-            <option value="character2">+0老母</option>
-        </select>
+        <div class="character-selection">
+            <label for="character">選擇角色：</label>
+            <select id="character" onchange="updateCharacterImage()">
+                <option value="character1" selected>+0</option>
+                <option value="character2">+0老母</option>
+            </select>
+        </div>
 
         <div id="character-container">
             <img id="character-img" src="/images/character1.png" alt="角色圖片">
@@ -100,6 +111,9 @@
     </div>
     <div id="leaderboard-button-container">
         <button id="leaderboard-btn">排行榜</button>
+    </div>
+    <div id="intro-button-container" class="intro-button-container">
+        <button class="intro-button" onclick="goToIntro()">遊戲介紹</button>
     </div>
     <div id="steal-options" class="hidden">
         <h3>選擇你的犯罪計畫：</h3>
@@ -137,5 +151,10 @@
         </div>
     </div>
     <script src="/javascripts/index.js"></script>
+    <script>
+        function goToIntro() {
+            window.location.href = "/intro";
+        }
+    </script>
 </body>
 </html>

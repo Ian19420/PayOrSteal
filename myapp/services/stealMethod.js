@@ -67,7 +67,7 @@ const stealMethods = {
         maxAmount: 20000,
         minPenalty: 5000,
         maxPenalty: 20000,
-        reputationPenalty: -50,
+        reputationPenalty: -30,
         policeIncrease: 50,
         scenarios: [
             {
@@ -107,14 +107,15 @@ function getStealOptions() {
     };
 }
 
-async function Steal(riskLevel, scenarioText) {
+async function Steal(riskLevel, scenarioText, userReputation) {
     const methodData = stealMethods[riskLevel];
     if (!methodData) return { error: "無效的風險等級" };
 
     const scenario = methodData.scenarios.find(s => s.scenario === scenarioText);
     if (!scenario) return { error: "無效的情境" };
-
-    const success = Math.random() < methodData.successRate;
+    let baseSuccessRate = methodData.successRate;
+    const adjustedSuccessRate = Math.max(0.1, baseSuccessRate + (userReputation / 200));
+    const success = Math.random() < adjustedSuccessRate;
     const addAmount = success ? Math.floor(Math.random() * (methodData.maxAmount - methodData.minAmount) + methodData.minAmount) : 0;
     const delAmount = success ? 0 : Math.floor(Math.random()*(methodData.maxPenalty - methodData.minPenalty) + methodData.minPenalty);
     const reputationChange = success ? methodData.reputationPenalty : 0;
@@ -133,5 +134,4 @@ async function Steal(riskLevel, scenarioText) {
         return { error: "數據庫更新失敗" };
     }
 }
-
 module.exports = { getStealOptions, Steal };
