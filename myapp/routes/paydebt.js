@@ -24,13 +24,14 @@ router.post("/", authMiddleware, async (req, res) => {
 
         user.bankBalance -= amount;
         user.debt -= amount;
+        if(user.job ==="worker") user.reputation += 5;
+        user.reputation += Math.floor(amount/1000);
         if (user.debt < 0) user.debt = 0;
 
         await user.save();
         const payDebtMessage = getPayDebtMessage(amount);
 
         res.json({
-            message: `成功還款 ${amount} 元！`,
             bankBalance: user.bankBalance,
             debt: user.debt,
             payDebtMessage

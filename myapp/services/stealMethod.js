@@ -5,8 +5,8 @@ const stealMethods = {
         maxAmount: 3000,
         minPenalty: 100,
         maxPenalty: 3000,
-        reputationPenalty: -10,
-        policeIncrease: 0,
+        reputationPenalty: -20,
+        policeIncrease: 10,
         scenarios: [
             {
                 scenario: "你在路邊撿到了一個紅包。",
@@ -36,8 +36,8 @@ const stealMethods = {
         maxAmount: 10000,
         minPenalty: 1000,
         maxPenalty: 10000,
-        reputationPenalty: -20,
-        policeIncrease: 20,
+        reputationPenalty: -30,
+        policeIncrease: 30,
         scenarios: [
             {
                 scenario: "你假裝是募款團體，打算騙取一筆捐款。",
@@ -67,8 +67,8 @@ const stealMethods = {
         maxAmount: 20000,
         minPenalty: 5000,
         maxPenalty: 20000,
-        reputationPenalty: -30,
-        policeIncrease: 50,
+        reputationPenalty: -40,
+        policeIncrease: 40,
         scenarios: [
             {
                 scenario: "你打算利用愛情詐騙吸乾對方的錢包！",
@@ -107,19 +107,30 @@ function getStealOptions() {
     };
 }
 
-async function Steal(riskLevel, scenarioText, userReputation) {
+async function Steal(riskLevel, scenarioText, userReputation, userJob) {
     const methodData = stealMethods[riskLevel];
     if (!methodData) return { error: "無效的風險等級" };
 
     const scenario = methodData.scenarios.find(s => s.scenario === scenarioText);
     if (!scenario) return { error: "無效的情境" };
+
     let baseSuccessRate = methodData.successRate;
+    if (userJob === "thief") {
+        baseSuccessRate = Math.min(0.9, baseSuccessRate + 0.2);
+    }
     const adjustedSuccessRate = Math.max(0.1, baseSuccessRate + (userReputation / 200));
     const success = Math.random() < adjustedSuccessRate;
+
     const addAmount = success ? Math.floor(Math.random() * (methodData.maxAmount - methodData.minAmount) + methodData.minAmount) : 0;
     const delAmount = success ? 0 : Math.floor(Math.random()*(methodData.maxPenalty - methodData.minPenalty) + methodData.minPenalty);
+
     const reputationChange = success ? methodData.reputationPenalty : 0;
     const policeChange = success ? 0 : methodData.policeIncrease;
+
+    if (!success && userJob === "thief") {
+        reputationChange = Math.floor(reputationChange / 2);
+    }
+
     const message = success ? scenario.success : scenario.failure;
     const amount = addAmount - delAmount;
     try {

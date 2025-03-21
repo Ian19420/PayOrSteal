@@ -30,7 +30,7 @@ router.post("/execute", authMiddleware, async (req, res) => {
             }
         }
 
-        const result = await Steal(riskLevel, scenario, user.reputation);
+        const result = await Steal(riskLevel, scenario, user.reputation, user.job);
         if (result.error) {
             return res.status(400).json({ error: result.error });
         }

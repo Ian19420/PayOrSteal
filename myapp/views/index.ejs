@@ -64,11 +64,17 @@
                 <span id="user-reputation"></span>
                 <span id="user-police"></span>
             </div>
-            <img id="user-character-img" src="" alt="角色圖片" class="character-img hidden">
+            <img id="user-job-img" src="" alt="角色圖片" class="job-img hidden">
         </div>
         <div id="action-buttons">
             <button id="pay-debt-btn">還債</button>
             <button id="steal-money-btn">偷錢</button>
+        </div>
+        <div id="bank" class="hidden">
+            <button id="bank-btn">🏦 銀行</button>
+        </div>
+        <div id="gang" class="hidden">
+            <button id="gang-btn">🔫 搶劫</button>
         </div>
     </div>
 
@@ -81,17 +87,20 @@
         <h2>註冊</h2>
         <input type="text" id="register-username" placeholder="帳號">
         <input type="password" id="register-password" placeholder="密碼">
-        
-        <div class="character-selection">
-            <label for="character">選擇角色：</label>
-            <select id="character" onchange="updateCharacterImage()">
-                <option value="character1" selected>+0</option>
-                <option value="character2">+0老母</option>
-            </select>
+        <div class="selection-container">
+            <div class="selection-box">
+                <label for="job">選擇職業：</label>
+                <select id="job" onchange="updateJobImage()">
+                    <option value="工人" selected>👷 工人</option>
+                    <option value="銀行家">🏦 銀行家</option>
+                    <option value="小偷">🕵️‍♂️ 小偷</option>
+                    <option value="黑幫">🔫 黑幫</option>
+                </select>
+            </div>
         </div>
 
-        <div id="character-container">
-            <img id="character-img" src="/images/character1.png" alt="角色圖片">
+        <div id="job-container">
+            <img id="job-img" src="/images/工人.png" alt="角色圖片">
         </div>
 
         <button id="register-btn">註冊</button>
@@ -148,6 +157,31 @@
         <div class="modal-content">
             <h2 id="steal-result-title"></h2>
             <p id="steal-result-message"></p>
+        </div>
+    </div>
+    <div id="bank-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>🏦 銀行管理</h2>
+            <p id="bank-balance-text">存款金額: $0</p>
+            <label for="bank-amount">輸入金額：</label>
+            <input type="number" id="bank-amount" min="1" step="100" placeholder="輸入金額">
+            <div class="modal-buttons">
+                <button id="deposit-btn">存款</button>
+                <button id="withdraw-btn">提款</button>
+                <button id="close-bank">關閉</button>
+            </div>
+        </div>
+    </div>
+    <div id="gang-heist-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>🔫 黑幫搶劫行動</h2>
+            <p>你要搶的是目前排行榜第一名：</p>
+            <p><strong id="target-username">載入中...</strong></p>
+    
+            <div class="heist-action-buttons">
+                <button id="start-gang-heist-btn">開始搶劫</button>
+                <button id="close-gang-heist-btn">取消</button>
+            </div>
         </div>
     </div>
     <script src="/javascripts/index.js"></script>

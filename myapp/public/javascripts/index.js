@@ -18,6 +18,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const leaderboardBtn = document.getElementById("leaderboard-btn");
 
     checkLogin();
+    setupBankSystem();
+    setupGangSystem();
 
     if (registerBtn) {
         registerBtn.addEventListener("click", () => {
@@ -73,12 +75,12 @@ document.addEventListener("DOMContentLoaded", () => {
 async function register() {
     const username = document.getElementById("register-username").value;
     const password = document.getElementById("register-password").value;
-    const character = document.getElementById("character").value;
+    const job = document.getElementById("job").value; 
 
     const res = await fetch("/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password, character}),
+        body: JSON.stringify({ username, password, job}),
     });
 
     const data = await res.json();
@@ -89,19 +91,25 @@ async function register() {
         alert(data.error);
     }
 }
-function updateCharacterImage() {
-    const character = document.getElementById("character").value;
-    const characterImg = document.getElementById("character-img");
+function updateJobImage() {
+    const job = document.getElementById("job").value;
+    const jobImg = document.getElementById("job-img");
 
-    switch (character) {
-        case "character1":
-            characterImg.src = "/images/character1.png";
+    switch (job) {
+        case "工人":
+            jobImg.src = "/images/工人.png";
             break;
-        case "character2":
-            characterImg.src = "/images/character2.png";
+        case "銀行家":
+            jobImg.src = "/images/銀行家.png";
+            break;
+        case "小偷":
+            jobImg.src = "/images/小偷.png";
+            break;
+        case "黑幫":
+            jobImg.src = "/images/黑幫.png";
             break;
         default:
-            characterImg.src = "/images/character1.png";
+            jobImg.src = "/images/工人.png";
     }
 }
 
@@ -140,17 +148,28 @@ async function checkLogin() {
             document.getElementById("auth").style.display = "none";
             document.getElementById("user-panel").style.display = "flex";
             const userName = document.getElementById('user-name');
-            userName.innerText = `${data.username}`;
+            userName.innerText = `${data.username} ${data.job}`;
             document.getElementById("user-balance").innerText = `💰 存款: ${data.bankBalance}`;
             document.getElementById("user-debt").innerText = `💳 債務: ${data.debt}`;
             document.getElementById("user-reputation").innerText = `🌟 聲譽: ${data.reputation}`;
             document.getElementById("user-police").innerText = `🚔 警示度: ${data.policeAttention}`;
-            const characterImg = document.getElementById("user-character-img");
-            characterImg.src = data.characterImage;
-            characterImg.classList.remove("hidden");
+            const jobImg = document.getElementById("user-job-img");
+            jobImg.src = data.jobImg;
+            jobImg.classList.remove("hidden");
             document.getElementById("logoutForm").style.display = "flex";
             document.getElementById("logout").classList.remove("hidden");
             document.getElementById("intro-button-container").style.display = "none";
+
+            if (data.job === "銀行家") {
+                document.getElementById("bank").style.display = "flex";
+            } else {
+                document.getElementById("bank").style.display = "none";
+            }
+            if (data.job === "黑幫") {
+                document.getElementById("gang").style.display = "flex";
+            } else {
+                document.getElementById("gang").style.display = "none";
+            }
         }
     } catch (err) {
         console.log("登入已過期，請重新登入");
@@ -319,3 +338,98 @@ function closeOverlay() {
     const overlay = document.querySelector(".overlay");
     if (overlay) overlay.remove();
 }
+
+function setupBankSystem() {
+    const bankBtn = document.getElementById("bank-btn");
+    const closeBank = document.getElementById("close-bank");
+    const depositBtn = document.getElementById("deposit-btn");
+    const withdrawBtn = document.getElementById("withdraw-btn");
+
+    bankBtn.addEventListener("click", () => {
+        toggleBankModal(true);
+    });
+
+    closeBank.addEventListener("click", () => {
+        toggleBankModal(false);
+    });
+
+    depositBtn.addEventListener("click", () => {
+        processBankTransaction("deposit");
+    });
+
+    withdrawBtn.addEventListener("click", () => {
+        processBankTransaction("withdraw");
+    });
+}
+function toggleBankModal(show) {
+    const bankModal = document.getElementById("bank-modal");
+    if (show) {
+        bankModal.classList.add("show");
+        updateBankBalance();
+    } else {
+        bankModal.classList.remove("show");
+    }
+}
+async function updateBankBalance() {
+    try {
+        const res = await fetch("/bank/balance", {
+            headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
+        });
+
+        if (!res.ok) throw new Error("Unauthorized");
+
+        const data = await res.json();
+        document.getElementById("bank-balance-text").innerText = `🏦 銀行存款: $${data.bankDeposit || 0}`;
+    } catch (err) {
+        console.log("更新銀行存款失敗");
+    }
+}
+async function processBankTransaction(type) {
+    const amount = parseInt(document.getElementById("bank-amount").value);
+    if (isNaN(amount) || amount <= 0) {
+        alert("請輸入有效的金額！");
+        return;
+    }
+    try {
+        const endpoint = type === "deposit" ? "/bank/deposit" : "/bank/withdraw";
+        const res = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("token")}`
+            },
+            body: JSON.stringify({ amount })
+        });
+
+        const data = await res.json();
+        if (data.error) {
+            alert(data.error);
+        } else {
+            updateBankBalance();
+            checkLogin();
+        }
+    } catch (err) {
+        console.error(`${type === "deposit" ? "存款" : "提款"}失敗:`, err);
+        alert(`${type === "deposit" ? "存款" : "提款"}時發生錯誤，請稍後再試！`);
+    }
+}
+function setupGangSystem() {
+    document.getElementById("gang-btn").addEventListener("click", async () => {
+        try {
+            const res = await fetch("/heist", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`
+                }
+            });
+    
+            const data = await res.json();
+            if (data.error) return alert(data.error);
+    
+            showStealResult("搶劫結果", data.message, data.gameOver || false);
+            checkLogin();
+        } catch (err) {
+            console.error("搶劫失敗:", err);
+        }
+    });
+}    

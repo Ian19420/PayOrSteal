@@ -3,7 +3,7 @@ async function arrestPlayer(userId) {
         await deleteUserFromDatabase(userId);
 
         return {
-            message: "遊戲結束，你的帳號已刪除。",
+            message: "你被警察發現了，遊戲結束!。",
             gameOver: true
         };
     } catch (err) {
